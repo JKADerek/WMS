@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Inventory Item{% endblock %}
+
+{% block content %}
+<div class="add-inventory-form">
+    <h1>Add New Inventory Item</h1>
+    <form action="{{ url_for('inventory.add_inventory_item') }}" method="post">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.item_name.label }}
+            {{ form.item_name }}
+            {% if form.item_name.errors %}
+                <div class="error">{{ form.item_name.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.sku.label }}
+            {{ form.sku }}
+            {% if form.sku.errors %}
+                <div class="error">{{ form.sku.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.quantity_in_stock.label }}
+            {{ form.quantity_in_stock }}
+            {% if form.quantity_in_stock.errors %}
+                <div class="error">{{ form.quantity_in_stock.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.reorder_level.label }}
+            {{ form.reorder_level }}
+            {% if form.reorder_level.errors %}
+                <div class="error">{{ form.reorder_level.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.unit_cost.label }}
+            {{ form.unit_cost }}
+            {% if form.unit_cost.errors %}
+                <div class="error">{{ form.unit_cost.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.supplier_name.label }}
+            {{ form.supplier_name }}
+            {% if form.supplier_name.errors %}
+                <div class="error">{{ form.supplier_name.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.supplier_contact.label }}
+            {{ form.supplier_contact }}
+            {% if form.supplier_contact.errors %}
+                <div class="error">{{ form.supplier_contact.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.location.label }}
+            {{ form.location }}
+            {% if form.location.errors %}
+                <div class="error">{{ form.location.errors[0] }}</div>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+from flask import Blueprint, render_template
+from .models import InventoryItem
+
+inventory = Blueprint('inventory', __name__)
+
+@inventory.route('/inventory')
+def inventory_dashboard():
+    items = InventoryItem.query.all()
+    return render_template('inventory_dashboard.html', items=items)

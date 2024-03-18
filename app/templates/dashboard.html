@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{ user.username }}!</h1>
+    <p>This is your dashboard. From here, you can view your inventory, manage items, and more.</p>
+    
+    <!-- Example of linking to the inventory dashboard -->
+    <a href="{{ url_for('inventory.inventory_dashboard') }}">View Inventory Dashboard</a>
+{% endblock %}

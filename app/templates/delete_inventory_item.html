@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Inventory Item{% endblock %}
+
+{% block content %}
+<div class="delete-inventory-item">
+    <h1>Delete Inventory Item</h1>
+    <p>Are you sure you want to delete "{{ item.item_name }}" from the inventory?</p>
+    <form action="{{ url_for('inventory.delete_inventory_item', item_id=item.id) }}" method="post">
+        <button type="submit" class="btn btn-danger">Confirm Delete</button>
+    </form>
+</div>
+{% endblock %}
