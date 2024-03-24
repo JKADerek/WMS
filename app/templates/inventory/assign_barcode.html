@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Assign Barcode{% endblock %}
+
+{% block content %}
+<section class="assign-barcode container">
+    <h1>Assign Barcode to Item</h1>
+    <form action="{{ url_for('inventory.assign_barcode') }}" method="post">
+        {{ form.hidden_tag() }}
+        {% for field in form %}
+        <div class="form-group">
+            {{ field.label(class="form-label") }}
+            {{ field(class="form-control" + (" is-invalid" if field.errors else "")) }}
+            {% for error in field.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Assign Barcode</button>
+    </form>
+</section>
+{% endblock %}

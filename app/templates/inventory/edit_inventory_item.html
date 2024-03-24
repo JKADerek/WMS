@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Inventory Item{% endblock %}
+
+{% block content %}
+<section class="edit-inventory-form container">
+    <h1>Edit Inventory Item</h1>
+    <form action="{{ url_for('main.edit_inventory_item', item_id=item.id) }}" method="post">
+        {{ form.hidden_tag() }}
+        {% for field in form %}
+        <div class="form-group">
+            {{ field.label(class="form-label") }}
+            {% if field.type == 'FileField' %}
+                {{ field(class="form-control-file" + (" is-invalid" if field.errors else "")) }}
+            {% else %}
+                {{ field(class="form-control" + (" is-invalid" if field.errors else "")) }}
+            {% endif %}
+            {% for error in field.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Update Item</button>
+    </form>
+</section>
+{% endblock %}

@@ -3,30 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Warehouse Management System">
     <title>{% block title %}Warehouse Management System{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <nav class="navigation-menu">
-        <ul>
-            <li><a href="{{ url_for('main.index') }}">Home</a></li>
-            <li><a href="{{ url_for('inventory.inventory_dashboard') }}">Inventory</a></li>
-            {% if current_user.is_authenticated %}
-            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-            {% else %}
-            <li><a href="{{ url_for('auth.login') }}">Login</a></li>
-            <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+    <header>
+        <nav class="navigation-menu">
+            <ul>
+                <!-- Home link varies based on authentication status -->
+                <li><a href="{{ url_for('main.dashboard') if current_user.is_authenticated else url_for('main.index') }}">Home</a></li>
+                
+                <!-- Show Inventory dashboard link if user is authenticated -->
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('inventory.inventory_dashboard') }}">Inventory</a></li>
+                {% endif %}
+                
+                <!-- Show Admin dashboard link if user is an admin -->
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+                {% endif %}
+                
+                <!-- Login/Logout based on authentication status -->
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+                {% else %}
+                <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
 
-    <div class="container">
+    <main class="container">
         {% block content %}
         {% endblock %}
-    </div>
+    </main>
 
     <footer class="footer">
-        <p>&copy; {{ current_year }} Warehouse Management System</p>
+        <p>&copy; {{ current_year }} Warehouse Management System. All rights reserved.</p>
     </footer>
     
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>

@@ -1,0 +1,19 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1>Assign Permissions</h1>
+    <form action="{{ url_for('admin.assign_permissions', role_id=role.id) }}" method="post">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {% for permission in form.permissions %}
+                <div class="form-check">
+                    {{ permission(class="form-check-input") }}
+                    {{ permission.label(class="form-check-label") }}
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Update Permissions</button>
+    </form>
+</div>
+{% endblock %}

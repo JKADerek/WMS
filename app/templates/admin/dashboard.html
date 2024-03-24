@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1>Admin Dashboard</h1>
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="list-group">
+                <a href="{{ url_for('admin.manage_users') }}" class="list-group-item list-group-item-action">Manage Users</a>
+                <a href="{{ url_for('admin.manage_roles') }}" class="list-group-item list-group-item-action">Manage Roles</a>
+                <a href="{{ url_for('admin.create_user') }}" class="list-group-item list-group-item-action">Create New User</a>
+                <a href="{{ url_for('admin.create_role') }}" class="list-group-item list-group-item-action">Create New Role</a>
+                <a href="{{ url_for('admin.assign_permissions') }}" class="list-group-item list-group-item-action">Assign Permissions</a>
+                <!-- You can add more links as needed for other admin functions -->
+            </div>
+        </div>
+        <div class="col-md-8">
+            <h2>Settings & Instructions</h2>
+            <p>Welcome to the Admin Dashboard. Use the links on the left to manage application settings, users, roles, and inventory display settings.</p>
+            <!-- Email Settings Form -->
+            <h3>Email Settings</h3>
+            <form action="{{ url_for('admin.update_email_settings') }}" method="post">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    <label for="senderEmail" class="form-label">Sender Email Address</label>
+                    <input type="email" class="form-control" id="senderEmail" name="sender_email" value="{{ current_sender_email }}">
+                </div>
+                <button type="submit" class="btn btn-primary">Update Email Settings</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

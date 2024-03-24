@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventory Dashboard{% endblock %}
+
+{% block content %}
+<section class="inventory-dashboard">
+    <div class="container">
+        <h1>Inventory Dashboard</h1>
+        <a href="{{ url_for('main.add_inventory_item') }}" class="btn btn-primary mb-3">Add New Item</a>
+        <div class="table-responsive">
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        {% for column in visible_columns %}
+                        <th scope="col">{{ column|capitalize.replace('_', ' ') }}</th>
+                        {% endfor %}
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in inventory_items %}
+                    <tr>
+                        {% if 'item_name' in visible_columns %}
+                        <td>{{ item.item_name }}</td>
+                        {% endif %}
+                        {% if 'sku' in visible_columns %}
+                        <td>{{ item.sku }}</td>
+                        {% endif %}
+                        {% if 'quantity_in_stock' in visible_columns %}
+                        <td>{{ item.quantity_in_stock }}</td>
+                        {% endif %}
+                        {% if 'reorder_level' in visible_columns %}
+                        <td>{{ item.reorder_level }}</td>
+                        {% endif %}
+                        {% if 'unit_cost' in visible_columns %}
+                        <td>{{ '%0.2f'|format(item.unit_cost) }}</td>
+                        {% endif %}
+                        {% if 'supplier_name' in visible_columns %}
+                        <td>{{ item.supplier_name }}</td>
+                        {% endif %}
+                        {% if 'supplier_contact' in visible_columns %}
+                        <td>{{ item.supplier_contact }}</td>
+                        {% endif %}
+                        {% if 'location' in visible_columns %}
+                        <td>{{ item.location }}</td>
+                        {% endif %}
+                        <td>
+                            <a href="{{ url_for('main.edit_inventory_item', item_id=item.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="{{ url_for('main.delete_inventory_item', item_id=item.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

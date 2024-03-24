@@ -3,9 +3,38 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    <h1>Welcome, {{ user.username }}!</h1>
-    <p>This is your dashboard. From here, you can view your inventory, manage items, and more.</p>
-    
-    <!-- Example of linking to the inventory dashboard -->
-    <a href="{{ url_for('inventory.inventory_dashboard') }}">View Inventory Dashboard</a>
+<section class="dashboard">
+    <div class="container">
+        <h1>Welcome, {{ current_user.email }}!</h1>
+        <p>This is your dashboard. Here, you can manage your activities and settings.</p>
+        
+        <div class="row my-4">
+            <!-- General User Links -->
+            <div class="col">
+                <a href="{{ url_for('main.inventory_dashboard') }}" class="btn btn-primary">View Inventory</a>
+            </div>
+
+            {% if current_user.can(Permission.MANAGE_INVENTORY) or current_user.is_admin() %}
+            <div class="col">
+                <a href="{{ url_for('main.add_inventory_item') }}" class="btn btn-success">Add Inventory Item</a>
+            </div>
+            {% endif %}
+
+            <!-- Admin-Specific Links -->
+            {% if current_user.can(Permission.MANAGE_USERS) %}
+            <div class="col">
+                <a href="{{ url_for('admin.manage_users') }}" class="btn btn-info">Manage Users</a>
+            </div>
+            <div class="col">
+                <a href="{{ url_for('admin.manage_roles') }}" class="btn btn-warning">Manage Roles</a>
+            </div>
+            {% endif %}
+
+            <!-- Logout Link -->
+            <div class="col">
+                <a href="{{ url_for('auth.logout') }}" class="btn btn-secondary">Logout</a>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

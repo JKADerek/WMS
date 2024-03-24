@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Inventory Item{% endblock %}
+
+{% block content %}
+<section class="add-inventory-form container">
+    <h1>Add New Inventory Item</h1>
+    <form action="{{ url_for('main.add_inventory_item') }}" method="post">
+        {{ form.hidden_tag() }}
+        {% for field in form %}
+        <div class="form-group">
+            {{ field.label(class="form-label") }}
+            {{ field(class="form-control" + (" is-invalid" if field.errors else "")) }}
+            {% for error in field.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </form>
+</section>
+{% endblock %}

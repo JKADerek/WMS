@@ -1,0 +1,16 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block content %}
+<div class="container mt-3">
+    <h1>Manage Roles</h1>
+    <a href="{{ url_for('admin.create_role') }}" class="btn btn-primary mb-3">Add New Role</a>
+    <div class="list-group">
+        {% for role in roles %}
+        <a href="{{ url_for('admin.edit_role', role_id=role.id) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            {{ role.name }}
+            <span class="badge bg-primary rounded-pill">{{ role.users.count() }} users</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -6,5 +6,5 @@ Flask-WTF
 Flask-Bcrypt
 WTForms
 email-validator
-Flask-Uploads
+Flask-reuploaded
 Flask-Migrate
