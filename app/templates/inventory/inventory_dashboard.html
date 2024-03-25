@@ -6,7 +6,12 @@
 <section class="inventory-dashboard">
     <div class="container">
         <h1>Inventory Dashboard</h1>
-        <a href="{{ url_for('main.add_inventory_item') }}" class="btn btn-primary mb-3">Add New Item</a>
+        {% if can_generate_reports %}
+        <!-- Ensure this href points to the generate report route in inventory.py -->
+        <a href="{{ url_for('inventory.generate_inventory_report') }}" class="btn btn-secondary mb-3">Generate Reports</a>
+        {% endif %}
+        <!-- Ensure these hrefs point to the correct endpoints for adding inventory items -->
+        <a href="{{ url_for('inventory.add_inventory_item') }}" class="btn btn-primary mb-3">Add New Item</a>
         <div class="table-responsive">
             <table class="table">
                 <thead class="thead-light">
@@ -20,33 +25,13 @@
                 <tbody>
                     {% for item in inventory_items %}
                     <tr>
-                        {% if 'item_name' in visible_columns %}
-                        <td>{{ item.item_name }}</td>
-                        {% endif %}
-                        {% if 'sku' in visible_columns %}
-                        <td>{{ item.sku }}</td>
-                        {% endif %}
-                        {% if 'quantity_in_stock' in visible_columns %}
-                        <td>{{ item.quantity_in_stock }}</td>
-                        {% endif %}
-                        {% if 'reorder_level' in visible_columns %}
-                        <td>{{ item.reorder_level }}</td>
-                        {% endif %}
-                        {% if 'unit_cost' in visible_columns %}
-                        <td>{{ '%0.2f'|format(item.unit_cost) }}</td>
-                        {% endif %}
-                        {% if 'supplier_name' in visible_columns %}
-                        <td>{{ item.supplier_name }}</td>
-                        {% endif %}
-                        {% if 'supplier_contact' in visible_columns %}
-                        <td>{{ item.supplier_contact }}</td>
-                        {% endif %}
-                        {% if 'location' in visible_columns %}
-                        <td>{{ item.location }}</td>
-                        {% endif %}
+                        {% for column in visible_columns %}
+                            <td>{{ item[column] }}</td>
+                        {% endfor %}
                         <td>
-                            <a href="{{ url_for('main.edit_inventory_item', item_id=item.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
-                            <a href="{{ url_for('main.delete_inventory_item', item_id=item.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
+                            <!-- Ensure these hrefs point to the correct endpoints for editing and deleting inventory items -->
+                            <a href="{{ url_for('inventory.edit_inventory_item', item_id=item.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                            <a href="{{ url_for('inventory.delete_inventory_item', item_id=item.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
                         </td>
                     </tr>
                     {% endfor %}

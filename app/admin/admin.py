@@ -63,7 +63,7 @@ def create_user():
 @admin.route('/roles')
 @login_required
 def manage_roles():
-    if not current_user.can(Permission.MANAGE_USERS):
+    if not current_user.can(Permission.MANAGE_ROLES):  # Updated permission check
         flash('Access denied: Insufficient permissions', 'danger')
         return redirect(url_for('main.index'))
     roles = Role.query.all()
@@ -87,12 +87,12 @@ def create_role():
 @admin.route('/assign_permissions/<int:role_id>', methods=['GET', 'POST'])
 @login_required
 def assign_permissions(role_id):
-    if not current_user.can(Permission.MANAGE_USERS):
+    if not current_user.can(Permission.ASSIGN_ROLES):  # Updated permission check
         flash('Access denied: Insufficient permissions', 'danger')
         return redirect(url_for('main.index'))
     role = Role.query.get_or_404(role_id)
     form = AssignPermissionsForm(obj=role)
-    if form.validate_on_submit():
+    if form.validate_on_submit():  # Ensure this line is correctly aligned
         # Assuming you have a method in your Role model to handle permission updates
         role.update_permissions(form.permissions.data)
         db.session.commit()
@@ -129,7 +129,7 @@ def update_inventory_columns():
 @admin.route('/update_email_settings', methods=['POST'])
 @login_required
 def update_email_settings():
-    if not current_user.can(Permission.MANAGE_USERS):  # Adjust according to your permissions system
+    if not current_user.can(Permission.MANAGE_SYSTEM_SETTINGS):  # Adjusted permission check
         flash('Access denied: Insufficient permissions.', 'danger')
         return redirect(url_for('admin.dashboard'))
 

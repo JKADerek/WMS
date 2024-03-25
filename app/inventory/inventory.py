@@ -14,8 +14,13 @@ def inventory_dashboard():
     if not current_user.can(Permission.VIEW_INVENTORY):
         flash('Access denied: Insufficient permissions.', 'danger')
         return redirect(url_for('main.dashboard'))
+    
+    # Check if the user has permission to generate reports
+    can_generate_reports = current_user.can('generate_reports')
+    
     items = InventoryItem.query.all()
-    return render_template('inventory_dashboard.html', items=items)
+    # Pass the 'can_generate_reports' flag to the template
+    return render_template('inventory_dashboard.html', items=items, can_generate_reports=can_generate_reports)
 
 @inventory.route('/inventory/add_inventory_item', methods=['GET', 'POST'])
 @login_required
@@ -84,3 +89,16 @@ def delete_inventory_item(item_id):
     db.session.commit()
     flash('Inventory item deleted successfully.', 'success')
     return redirect(url_for('inventory.inventory_dashboard'))
+
+@inventory.route('/reports/generate')
+@login_required
+def generate_inventory_report():
+    if not current_user.can('generate_reports'):
+        flash('Access denied: Insufficient permissions to generate inventory reports.', 'danger')
+        return redirect(url_for('inventory.inventory_dashboard'))
+
+    # Query the database for inventory items
+    items = InventoryItem.query.all()
+
+    # Pass the items to the template for display
+    return render_template('inventory/reports/generate_inventory_report.html', items=items)

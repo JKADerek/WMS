@@ -8,28 +8,41 @@
     <div class="row">
         <div class="col-md-4 mb-3">
             <div class="list-group">
+                {% if current_user.can(Permission.MANAGE_USERS) %}
                 <a href="{{ url_for('admin.manage_users') }}" class="list-group-item list-group-item-action">Manage Users</a>
+                {% endif %}
+                {% if current_user.can(Permission.MANAGE_ROLES) %}
                 <a href="{{ url_for('admin.manage_roles') }}" class="list-group-item list-group-item-action">Manage Roles</a>
+                {% endif %}
+                {% if current_user.can(Permission.MANAGE_USERS) %}
                 <a href="{{ url_for('admin.create_user') }}" class="list-group-item list-group-item-action">Create New User</a>
+                {% endif %}
+                {% if current_user.can(Permission.MANAGE_ROLES) %}
                 <a href="{{ url_for('admin.create_role') }}" class="list-group-item list-group-item-action">Create New Role</a>
+                {% endif %}
+                {% if current_user.can(Permission.ASSIGN_ROLES) %}
                 <a href="{{ url_for('admin.assign_permissions') }}" class="list-group-item list-group-item-action">Assign Permissions</a>
-                <!-- You can add more links as needed for other admin functions -->
+                {% endif %}
+                <!-- Additional admin functions based on permissions can be added here -->
             </div>
         </div>
         <div class="col-md-8">
             <h2>Settings & Instructions</h2>
-            <p>Welcome to the Admin Dashboard. Use the links on the left to manage application settings, users, roles, and inventory display settings.</p>
-            <!-- Email Settings Form -->
+            <p>Welcome to the Admin Dashboard. Use the links on the left to manage application settings, users, roles, and permissions.</p>
+            <!-- Conditional rendering for email settings based on permissions -->
+            {% if current_user.can(Permission.MANAGE_SYSTEM_SETTINGS) %}
             <h3>Email Settings</h3>
             <form action="{{ url_for('admin.update_email_settings') }}" method="post">
                 {{ form.hidden_tag() }}
                 <div class="mb-3">
                     <label for="senderEmail" class="form-label">Sender Email Address</label>
-                    <input type="email" class="form-control" id="senderEmail" name="sender_email" value="{{ current_sender_email }}">
+                    <input type="email" class="form-control" id="senderEmail" name="sender_email" required value="{{ current_sender_email }}">
                 </div>
                 <button type="submit" class="btn btn-primary">Update Email Settings</button>
             </form>
+            {% endif %}
         </div>
     </div>
 </div>
 {% endblock %}
+

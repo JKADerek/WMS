@@ -18,6 +18,10 @@ def index():
 @main.route('/dashboard')
 @login_required
 def dashboard():
-    # Dashboard route, accessible to any authenticated user
-    # If you have different dashboards, you can redirect to a specific one here
+    # Check if the user has the 'view_dashboard' permission
+    if not current_user.can('view_dashboard'):
+        flash('Access denied: Insufficient permissions to view the dashboard.', 'danger')
+        return redirect(url_for('main.index'))
+    
+    # Proceed to render the dashboard if the user has permission
     return render_template('dashboard.html')

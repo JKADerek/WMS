@@ -57,7 +57,7 @@ class InventoryItem(db.Model):
     supplier_contact = db.Column(db.String(100), nullable=False)
     location = db.Column(db.String(100), nullable=False)
     image_filename = db.Column(db.String(100))  # Optional: handle image upload separately
-   
+ 
     def __repr__(self):
         return f'<InventoryItem {self.item_name}>'
 
