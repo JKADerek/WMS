@@ -3,46 +3,41 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container mt-3">
-    <h1>Admin Dashboard</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Admin Dashboard</h1>
     <div class="row">
         <div class="col-md-4 mb-3">
-            <div class="list-group">
-                {% if current_user.can(Permission.MANAGE_USERS) %}
+            <div class="list-group shadow">
+                {% if current_user.has_role('Admin') %}
                 <a href="{{ url_for('admin.manage_users') }}" class="list-group-item list-group-item-action">Manage Users</a>
-                {% endif %}
-                {% if current_user.can(Permission.MANAGE_ROLES) %}
-                <a href="{{ url_for('admin.manage_roles') }}" class="list-group-item list-group-item-action">Manage Roles</a>
-                {% endif %}
-                {% if current_user.can(Permission.MANAGE_USERS) %}
                 <a href="{{ url_for('admin.create_user') }}" class="list-group-item list-group-item-action">Create New User</a>
+                <a href="{{ url_for('admin.manage_inventory_columns') }}" class="list-group-item list-group-item-action">Manage Inventory Columns</a>
+                <!-- Additional admin functions can be conditionally rendered based on roles -->
                 {% endif %}
-                {% if current_user.can(Permission.MANAGE_ROLES) %}
-                <a href="{{ url_for('admin.create_role') }}" class="list-group-item list-group-item-action">Create New Role</a>
-                {% endif %}
-                {% if current_user.can(Permission.ASSIGN_ROLES) %}
-                <a href="{{ url_for('admin.assign_permissions') }}" class="list-group-item list-group-item-action">Assign Permissions</a>
-                {% endif %}
-                <!-- Additional admin functions based on permissions can be added here -->
             </div>
         </div>
         <div class="col-md-8">
-            <h2>Settings & Instructions</h2>
-            <p>Welcome to the Admin Dashboard. Use the links on the left to manage application settings, users, roles, and permissions.</p>
-            <!-- Conditional rendering for email settings based on permissions -->
-            {% if current_user.can(Permission.MANAGE_SYSTEM_SETTINGS) %}
-            <h3>Email Settings</h3>
-            <form action="{{ url_for('admin.update_email_settings') }}" method="post">
-                {{ form.hidden_tag() }}
-                <div class="mb-3">
-                    <label for="senderEmail" class="form-label">Sender Email Address</label>
-                    <input type="email" class="form-control" id="senderEmail" name="sender_email" required value="{{ current_sender_email }}">
-                </div>
-                <button type="submit" class="btn btn-primary">Update Email Settings</button>
-            </form>
-            {% endif %}
+            <div class="shadow p-4">
+                <h2>Settings & Instructions</h2>
+                <p>Welcome to the Admin Dashboard. Use the links on the left to manage application settings, users, roles, permissions, and inventory display settings.</p>
+                {% if current_user.has_role('Admin') %}
+                <h3>Email Settings</h3>
+                <form action="{{ url_for('admin.update_email_settings') }}" method="post">
+                    {{ email_settings_form.hidden_tag() }}
+                    <div class="mb-3">
+                        {{ email_settings_form.sender_email.label(class="form-label") }}
+                        {{ email_settings_form.sender_email(class="form-control") }}
+                        {% if email_settings_form.sender_email.errors %}
+                        <div class="invalid-feedback">
+                            {{ email_settings_form.sender_email.errors[0] }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {{ email_settings_form.submit(class="btn btn-primary") }}
+                </form>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

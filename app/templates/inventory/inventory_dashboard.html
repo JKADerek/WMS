@@ -7,17 +7,16 @@
     <div class="container">
         <h1>Inventory Dashboard</h1>
         {% if can_generate_reports %}
-        <!-- Ensure this href points to the generate report route in inventory.py -->
         <a href="{{ url_for('inventory.generate_inventory_report') }}" class="btn btn-secondary mb-3">Generate Reports</a>
         {% endif %}
-        <!-- Ensure these hrefs point to the correct endpoints for adding inventory items -->
         <a href="{{ url_for('inventory.add_inventory_item') }}" class="btn btn-primary mb-3">Add New Item</a>
         <div class="table-responsive">
+            {% if inventory_items %}
             <table class="table">
                 <thead class="thead-light">
                     <tr>
-                        {% for column in visible_columns %}
-                        <th scope="col">{{ column|capitalize.replace('_', ' ') }}</th>
+                        {% for col_name, _ in visible_columns %}
+                        <th scope="col">{{ col_name|capitalize|replace('_', ' ') }}</th>
                         {% endfor %}
                         <th scope="col">Actions</th>
                     </tr>
@@ -25,11 +24,10 @@
                 <tbody>
                     {% for item in inventory_items %}
                     <tr>
-                        {% for column in visible_columns %}
-                            <td>{{ item[column] }}</td>
+                        {% for _, attr_name in visible_columns %}
+                            <td>{{ item[attr_name] }}</td> <!-- Use direct attribute access -->
                         {% endfor %}
                         <td>
-                            <!-- Ensure these hrefs point to the correct endpoints for editing and deleting inventory items -->
                             <a href="{{ url_for('inventory.edit_inventory_item', item_id=item.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
                             <a href="{{ url_for('inventory.delete_inventory_item', item_id=item.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
                         </td>
@@ -37,6 +35,9 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% else %}
+            <p>No inventory items found.</p>
+            {% endif %}
         </div>
     </div>
 </section>

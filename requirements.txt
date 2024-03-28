@@ -1,4 +1,4 @@
-Flask
+Flask>=1.0.0,<3.0.1
 Flask-Login
 Flask-Mail
 Flask-SQLAlchemy
@@ -6,5 +6,6 @@ Flask-WTF
 Flask-Bcrypt
 WTForms
 email-validator
-Flask-reuploaded
+Flask-Uploads  # Referring to Flask-Reuploaded as Flask-Uploads as per documentation
 Flask-Migrate
+Flask-Security

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from "security/_macros.html" import render_field_with_errors, render_field %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center">{{ _fsdomain('Resend Confirmation Instructions') }}</h2>
+                    {% include "security/_messages.html" %}
+                    <p class="text-center">If you didn't receive the confirmation instructions, enter your email address below, and we'll resend them.</p>
+                    <form action="{{ url_for_security('send_confirmation') }}" method="post" name="send_confirmation_form" class="mt-4">
+                        {{ send_confirmation_form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ render_field_with_errors(send_confirmation_form.email, class="form-control") }}
+                        </div>
+                        <div class="d-grid gap-2">
+                            {{ render_field(send_confirmation_form.submit, class="btn btn-primary btn-block") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include "security/_menu.html" %}
+{% endblock content %}

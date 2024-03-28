@@ -1,37 +1,42 @@
-# file: app/inventory/inventory.py
 from flask import Blueprint, render_template, flash, redirect, url_for, request
-from flask_login import login_required, current_user
-from app.models.models import InventoryItem, Permission
+from flask_security import login_required, roles_accepted
+from app.models.models import InventoryItem
 from app.forms.inventory_forms import InventoryForm
 from app.extensions import db, photos
 from werkzeug.utils import secure_filename
+from flask_uploads import UploadNotAllowed
 
-inventory = Blueprint('inventory', __name__)
+inventory = Blueprint('inventory', __name__, url_prefix='/inventory')
 
-@inventory.route('/inventory/inventory_dashboard')
+@inventory.route('/inventory_dashboard')
 @login_required
+@roles_accepted('Admin', 'InventoryManager')
 def inventory_dashboard():
-    if not current_user.can(Permission.VIEW_INVENTORY):
-        flash('Access denied: Insufficient permissions.', 'danger')
-        return redirect(url_for('main.dashboard'))
-    
-    # Check if the user has permission to generate reports
-    can_generate_reports = current_user.can('generate_reports')
-    
-    items = InventoryItem.query.all()
-    # Pass the 'can_generate_reports' flag to the template
-    return render_template('inventory_dashboard.html', items=items, can_generate_reports=can_generate_reports)
+    inventory_items = InventoryItem.query.all()
+    visible_columns = [
+        ('Name', 'name'),
+        ('Quantity In Stock', 'quantity_in_stock'),
+        ('Unit Cost', 'unit_cost'),
+        ('Supplier Name', 'supplier_name')
+    ]
+    return render_template('inventory/inventory_dashboard.html', inventory_items=inventory_items, visible_columns=visible_columns)
 
-@inventory.route('/inventory/add_inventory_item', methods=['GET', 'POST'])
+
+@inventory.route('/add_inventory_item', methods=['GET', 'POST'])
 @login_required
+@roles_accepted('Admin', 'InventoryManager')
 def add_inventory_item():
-    if not current_user.can(Permission.MANAGE_INVENTORY):
-        flash('Access denied: Insufficient permissions.', 'danger')
-        return redirect(url_for('inventory.inventory_dashboard'))
-    
     form = InventoryForm()
     if form.validate_on_submit():
-        filename = photos.save(form.image.data, name=secure_filename(form.image.data.filename))
+        filename = None  # Initialize filename to None
+        if form.image.data:
+            try:
+                filename = photos.save(form.image.data, name=secure_filename(form.image.data.filename))
+            except UploadNotAllowed:
+                flash('Upload not allowed', 'error')
+                return redirect(url_for('inventory.add_inventory_item'))  # Stay on the form page if upload fails
+
+        # Create a new InventoryItem instance
         new_item = InventoryItem(
             item_name=form.item_name.data,
             sku=form.sku.data,
@@ -41,49 +46,44 @@ def add_inventory_item():
             supplier_name=form.supplier_name.data,
             supplier_contact=form.supplier_contact.data,
             location=form.location.data,
-            image_filename=filename  # Ensure your model has this field
+            image_filename=filename  # This will be None if no file was selected/upload failed
         )
+        
+        # Add the new item to the database session and commit
         db.session.add(new_item)
         db.session.commit()
-        flash('Inventory item added successfully.', 'success')
-        return redirect(url_for('inventory.inventory_dashboard'))
-    return render_template('add_inventory_item.html', form=form)
-
-@inventory.route('/inventory/edit_inventory_item/<int:item_id>', methods=['GET', 'POST'])
-@login_required
-def edit_inventory_item(item_id):
-    if not current_user.can(Permission.MANAGE_INVENTORY):
-        flash('Access denied: Insufficient permissions.', 'danger')
+        flash('New inventory item added successfully!', 'success')
+        
+        # Redirect to the inventory dashboard after successful addition
         return redirect(url_for('inventory.inventory_dashboard'))
     
+    # Render the add_inventory_item template with the form
+    return render_template('inventory/add_inventory_item.html', form=form)
+
+
+@inventory.route('/edit_inventory_item/<int:item_id>', methods=['GET', 'POST'])
+@login_required
+@roles_accepted('Admin', 'InventoryManager')
+def edit_inventory_item(item_id):
     item = InventoryItem.query.get_or_404(item_id)
     form = InventoryForm(obj=item)
     if form.validate_on_submit():
-        item.item_name = form.item_name.data
-        item.sku = form.sku.data
-        item.quantity_in_stock = form.quantity_in_stock.data
-        item.reorder_level = form.reorder_level.data
-        item.unit_cost = form.unit_cost.data
-        item.supplier_name = form.supplier_name.data
-        item.supplier_contact = form.supplier_contact.data
-        item.location = form.location.data
-        # Handle image updates if necessary
+        # Update item details here...
+
         if form.image.data:
             filename = photos.save(form.image.data, name=secure_filename(form.image.data.filename))
             item.image_filename = filename
         db.session.commit()
         flash('Inventory item updated successfully.', 'success')
         return redirect(url_for('inventory.inventory_dashboard'))
-    form.process(obj=item)
-    return render_template('edit_inventory_item.html', form=form, item_id=item_id)
 
-@inventory.route('/inventory/delete_inventory_item/<int:item_id>', methods=['POST'])
+    # Update the template path to 'inventory/edit_inventory_item.html'
+    return render_template('inventory/edit_inventory_item.html', form=form, item=item)
+
+@inventory.route('/delete_inventory_item/<int:item_id>', methods=['POST'])
 @login_required
+@roles_accepted('Admin', 'InventoryManager')
 def delete_inventory_item(item_id):
-    if not current_user.can(Permission.MANAGE_INVENTORY):
-        flash('Access denied: Insufficient permissions.', 'danger')
-        return redirect(url_for('inventory.inventory_dashboard'))
-    
     item = InventoryItem.query.get_or_404(item_id)
     db.session.delete(item)
     db.session.commit()
@@ -92,13 +92,8 @@ def delete_inventory_item(item_id):
 
 @inventory.route('/reports/generate')
 @login_required
+@roles_accepted('Admin', 'InventoryManager')
 def generate_inventory_report():
-    if not current_user.can('generate_reports'):
-        flash('Access denied: Insufficient permissions to generate inventory reports.', 'danger')
-        return redirect(url_for('inventory.inventory_dashboard'))
-
-    # Query the database for inventory items
     items = InventoryItem.query.all()
-
-    # Pass the items to the template for display
+    # Update the template path to 'inventory/reports/generate_inventory_report.html'
     return render_template('inventory/reports/generate_inventory_report.html', items=items)

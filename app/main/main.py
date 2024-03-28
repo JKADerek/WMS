@@ -1,27 +1,22 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
-from flask_login import login_required, current_user
-from app.models.models import Permission
-from app.extensions import db
+from flask import Blueprint, render_template, redirect, url_for, flash
+from flask_security import login_required, roles_required, roles_accepted, current_user
 
 main = Blueprint('main', __name__)
-
-# file: app/main/main.py
 
 @main.route('/')
 def index():
     if current_user.is_authenticated:
         # Redirect to the inventory dashboard if the user is logged in
         return redirect(url_for('main.dashboard'))
-    # Otherwise, redirect to the login page
-    return redirect(url_for('auth.login'))
+    # Otherwise, redirect to Flask-Security's login view
+    return redirect(url_for('security.login'))  # Updated to use Flask-Security's default login view
 
 @main.route('/dashboard')
-@login_required
+@login_required  # Ensures that the user must be authenticated to view the dashboard
+@roles_accepted('Admin', 'User')  # Assuming 'Admin' and 'User' roles have permission to view dashboard
 def dashboard():
-    # Check if the user has the 'view_dashboard' permission
-    if not current_user.can('view_dashboard'):
-        flash('Access denied: Insufficient permissions to view the dashboard.', 'danger')
-        return redirect(url_for('main.index'))
-    
-    # Proceed to render the dashboard if the user has permission
+    # The check for specific permissions can be done here if needed, 
+    # but @roles_accepted simplifies access control based on roles
+
+    # Proceed to render the dashboard
     return render_template('dashboard.html')

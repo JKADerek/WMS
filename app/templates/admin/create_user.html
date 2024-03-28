@@ -7,7 +7,6 @@
     <h1>Create New User</h1>
     <div class="row">
         <div class="col-md-6">
-            <!-- You may need to include csrf_token in your form for security -->
             <form action="{{ url_for('admin.create_user') }}" method="post" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
                 <div class="form-group mb-3">
@@ -23,10 +22,10 @@
                 </div>
                 <div class="form-group mb-3">
                     <label for="role">Role</label>
-                    {{ form.role_id(class_='form-control') }}
-                    {% if form.role_id.errors %}
+                    {{ form.roles(class_='form-control') }} <!-- Updated to 'roles' to reflect potential multiple role selection -->
+                    {% if form.roles.errors %}
                         <div class="alert alert-danger">
-                            {% for error in form.role_id.errors %}
+                            {% for error in form.roles.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>

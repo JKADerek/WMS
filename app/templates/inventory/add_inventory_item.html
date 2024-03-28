@@ -5,7 +5,7 @@
 {% block content %}
 <section class="add-inventory-form container">
     <h1>Add New Inventory Item</h1>
-    <form action="{{ url_for('main.add_inventory_item') }}" method="post">
+    <form action="{{ url_for('inventory.add_inventory_item') }}" method="post">
         {{ form.hidden_tag() }}
         {% for field in form %}
         <div class="form-group">
