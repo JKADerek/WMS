@@ -1,16 +1,19 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_security.utils import hash_password
-from flask_security import login_required, roles_required, current_user, SQLAlchemyUserDatastore
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask_security import login_required, roles_required, hash_password
 from app.forms.admin_forms import CreateUserForm, RoleForm, AssignPermissionsForm, InventoryColumnForm, EmailSettingsForm
-from app.models.models import User, Role, InventoryColumnSettings, AdminSettings
-from app.extensions import db, mail
+from app.models.models import User, Role, InventoryColumnSettings, AdminSettings, db
+from app.extensions import mail
 from flask_mail import Message
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
+def get_role_choices():
+    """Fetches roles from the database and formats them for form choices."""
+    return [(role.id, role.name) for role in Role.query.order_by('name')]
+
 @admin.route('/dashboard')
 @login_required
-@roles_required('Admin')  # Example of using Flask-Security's role requirement
+@roles_required('Admin')
 def dashboard():
     email_settings_form = EmailSettingsForm()
     return render_template('admin/dashboard.html', email_settings_form=email_settings_form)
@@ -27,44 +30,37 @@ def manage_users():
 @roles_required('Admin')
 def create_user():
     form = CreateUserForm()
+    form.roles.choices = get_role_choices()  # Populate role choices
 
     if form.validate_on_submit():
-        # Instantiate a new User object
-        user = User(email=form.email.data, active=form.active.data)
-        
-        # Generate a random password for the user instance
-        random_password = user.set_random_password()
-        
-        # Create a new user with the random password
-        user_datastore.create_user(
-            email=user.email, 
-            password=random_password,  # Flask-Security will handle the password hashing
-            active=user.active
+        user_datastore = current_app.extensions['security'].datastore
+        random_password = User().set_random_password()  # Assuming this method also hashes the password
+
+        user = user_datastore.create_user(
+            email=form.email.data, 
+            password=random_password,
+            active=form.active.data
         )
 
-        # Find and assign the selected role to the user
-        role = user_datastore.find_role(form.roles.data)  # Assuming 'roles' contains the role name
-        user_datastore.add_role_to_user(user, role)
+        role = Role.query.get(form.roles.data)
+        if role:
+            user_datastore.add_role_to_user(user, role)
+            db.session.commit()
 
-        # Commit changes to the database
-        db.session.commit()
+            msg = Message(
+                "Your Account Information",
+                recipients=[user.email],
+                body=f"Welcome! Your account has been created. Please log in using this password: {random_password}. It is recommended to change your password after logging in."
+            )
+            mail.send(msg)
 
-        # Email the random password to the user
-        msg = Message(
-            "Your Account Information",
-            recipients=[user.email],
-            body=f"Welcome! Your account has been created. Please log in using this password: {random_password}. It is recommended to change your password after logging in."
-        )
-        mail.send(msg)
+            flash('User created successfully and password emailed.', 'success')
+        else:
+            flash('Selected role does not exist.', 'error')
 
-        flash('User created successfully and password emailed.', 'success')
         return redirect(url_for('admin.manage_users'))
 
-    # Pre-populate the roles field choices
-    form.roles.choices = [(role.id, role.name) for role in Role.query.order_by('name')]
-
     return render_template('admin/create_user.html', form=form)
-
 
 @admin.route('/roles')
 @login_required
@@ -79,7 +75,7 @@ def manage_roles():
 def create_role():
     form = RoleForm()
     if form.validate_on_submit():
-        from app.extensions import user_datastore
+        user_datastore = current_app.extensions['security'].datastore
         user_datastore.create_role(name=form.name.data, description=form.description.data)
         db.session.commit()
         flash('Role created successfully.', 'success')
@@ -97,18 +93,7 @@ def manage_inventory_columns():
 @login_required
 @roles_required('Admin')
 def update_email_settings():
-    # Example of retrieving form data
     sender_email = request.form.get('sender_email')
-    
-    # Placeholder: Update your email settings here
-    # This could involve updating application configuration, a database entry, or another storage mechanism
-    # For example:
-    # admin_settings = AdminSettings.query.first()
-    # admin_settings.sender_email = sender_email
-    # db.session.commit()
-    
+    # Implement the actual update logic here
     flash('Email settings updated successfully.', 'success')
     return redirect(url_for('admin.dashboard'))
-
-# Additional routes as needed
-

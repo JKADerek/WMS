@@ -4,35 +4,57 @@
 
 {% block content %}
 <section class="dashboard">
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Welcome, {{ current_user.email }}!</h1>
-        <p class="lead text-center">This is your dashboard. Manage your activities and settings here.</p>
-        
-        <div class="row my-4">
-            <!-- General User Links displayed in a centered fashion -->
-            <div class="col-md-6 col-lg-4 mb-3">
-                <a href="{{ url_for('inventory.inventory_dashboard') }}" class="btn btn-primary btn-block btn-lg">View Inventory</a>
+    <h1 class="text-center my-4">Welcome, {{ current_user.email }}!</h1>
+    <p class="lead text-center">This is your dashboard. Here, you can manage your activities and settings.</p>
+    
+    <div class="row text-center">
+        <!-- Dashboard content cards -->
+        <div class="col-md-4 mb-3">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">View Inventory</h5>
+                    <a href="{{ url_for('inventory.inventory_dashboard') }}" class="btn btn-primary">Go to Inventory</a>
+                </div>
             </div>
+        </div>
 
-            {% if current_user.has_role('InventoryManager') or current_user.has_role('Admin') %}
-            <div class="col-md-6 col-lg-4 mb-3">
-                <a href="{{ url_for('inventory.add_inventory_item') }}" class="btn btn-success btn-block btn-lg">Add Inventory Item</a>
+        {% if current_user.has_role('InventoryManager') or current_user.has_role('Admin') %}
+        <div class="col-md-4 mb-3">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Add Inventory Item</h5>
+                    <a href="{{ url_for('inventory.add_inventory_item') }}" class="btn btn-success">Add Item</a>
+                </div>
             </div>
-            {% endif %}
+        </div>
+        {% endif %}
 
-            <!-- Admin-Specific Links -->
-            {% if current_user.has_role('Admin') %}
-            <div class="col-md-6 col-lg-4 mb-3">
-                <a href="{{ url_for('admin.manage_users') }}" class="btn btn-info btn-block btn-lg">Manage Users</a>
+        {% if current_user.has_role('Admin') %}
+        <div class="col-md-4 mb-3">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Users</h5>
+                    <a href="{{ url_for('admin.manage_users') }}" class="btn btn-info">User Settings</a>
+                </div>
             </div>
-            <div class="col-md-6 col-lg-4 mb-3">
-                <a href="{{ url_for('admin.manage_roles') }}" class="btn btn-warning btn-block btn-lg">Manage Roles</a>
-            </div>
-            {% endif %}
+        </div>
 
-            <!-- Logout Link for all users -->
-            <div class="col-md-6 col-lg-4 mb-3">
-                <a href="{{ url_for('security.logout') }}" class="btn btn-secondary btn-block btn-lg">Logout</a>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Roles</h5>
+                    <a href="{{ url_for('admin.manage_roles') }}" class="btn btn-warning">Role Settings</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h5 class="card-title">Logout</h5>
+                    <a href="{{ url_for('security.logout') }}" class="btn btn-secondary">Sign Out</a>
+                </div>
             </div>
         </div>
     </div>

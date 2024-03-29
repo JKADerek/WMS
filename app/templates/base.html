@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="description" content="Warehouse Management System">
     <title>{% block title %}Warehouse Management System{% endblock %}</title>
+    <!-- Bootstrap CSS for styling and responsive design -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.ico') }}">
@@ -13,40 +15,46 @@
 </head>
 <body>
     <header>
-        <nav class="navigation-menu">
-            <ul>
-                <!-- Home link varies based on authentication status -->
-                <li><a href="{{ url_for('main.dashboard') if current_user.is_authenticated else url_for('security.login') }}">Home</a></li>
-                
-                <!-- Show Inventory dashboard link if user is authenticated -->
-                {% if current_user.has_role('User') or current_user.has_role('Admin') or current_user.has_role('InventoryManager') %}
-                <li><a href="{{ url_for('inventory.inventory_dashboard') }}">Inventory</a></li>
-                {% endif %}
-                
-                <!-- Show Admin dashboard link if user is an admin -->
-                {% if current_user.has_role('Admin') %}
-                <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
-                {% endif %}
-                
-                <!-- Login/Logout based on authentication status -->
-                {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('security.logout') }}">Logout</a></li>
-                {% else %}
-                <li><a href="{{ url_for('security.login') }}">Login</a></li>
-                {% endif %}
-            </ul>
+        <!-- Bootstrap navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('main.dashboard') }}">WMS</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <!-- Navigation links based on authentication status -->
+                        {% if current_user.is_authenticated %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('inventory.inventory_dashboard') }}">Inventory</a></li>
+                            {% if current_user.has_role('Admin') %}
+                                <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+                            {% endif %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('security.logout') }}">Logout</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{{ url_for('security.login') }}">Login</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
         </nav>
     </header>
 
-    <main class="container">
+    <main role="main" class="container mt-4">
         {% block content %}
+        <!-- Content will be injected here from other templates -->
         {% endblock %}
     </main>
 
-    <footer class="footer">
-        <p>&copy; {{ current_year }} Warehouse Management System. All rights reserved.</p>
+    <footer class="footer bg-primary text-white text-center py-3">
+        <div class="container">
+            &copy; {{ current_year }} Warehouse Management System. All rights reserved.
+        </div>
     </footer>
-    
-    <!--<script src="{{ url_for('static', filename='js/script.js') }}"></script>-->
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

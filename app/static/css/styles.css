@@ -1,37 +1,46 @@
 /* General Body Styling */
 body {
-    background-color: #f4f7fa; /* Light grey background for slight contrast */
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #edf2f7; /* Updated background for a softer contrast */
+    font-family: 'Nunito', 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Modern font family */
+    color: #333; /* Universal text color for better readability */
 }
 
 /* Navigation Menu Styles */
 .navigation-menu {
-    background: #007bff; /* Bootstrap primary blue */
+    background: #007bff; /* Maintaining the primary blue */
     color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04); /* Added subtle shadow for depth */
 }
 
 .navigation-menu ul {
     padding: 0;
     list-style-type: none;
+    margin: 0; /* Reset default margin */
+}
+
+.navigation-menu li {
+    display: inline-block; /* Align menu items horizontally */
 }
 
 .navigation-menu li a {
     color: white;
     text-decoration: none;
-    padding: 10px 15px;
-    display: block;
+    padding: 10px 20px; /* Increased horizontal padding for a wider touch target */
+    display: inline-block;
 }
 
-.navigation-menu li a:hover {
-    background-color: #0056b3; /* A darker blue on hover */
+.navigation-menu li a:hover, .navigation-menu li a:focus {
+    background-color: #0056b3; /* Darker blue on hover/focus */
+    border-radius: 5px; /* Slight rounding on hover/focus */
 }
 
 /* Card Styles */
 .card {
-    border: none;
-    border-radius: 0.5rem; /* Rounded corners */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-    margin-top: 2rem;
+    background: white; /* Ensuring cards are white */
+    border: 1px solid #e2e8f0; /* Subtle border color */
+    border-radius: 12px; /* More pronounced rounded corners */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05); /* Increased shadow for more depth */
+    margin-top: 1rem; /* Reduced top margin for tighter layout */
 }
 
 .card-body {
@@ -39,41 +48,26 @@ body {
 }
 
 .card-title {
-    color: #333;
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-/* Form Control Styles */
-.form-control {
-    border-radius: 0.25rem;
-    padding: 1rem;
-    margin-bottom: 1rem; /* Added margin to bottom for spacing */
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075); /* Inner shadow for depth */
-}
-
-.form-control:focus {
-    border-color: #007bff;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 8px rgba(0, 123, 255, 0.6);
-}
-
-.invalid-feedback {
-    display: block;
+    color: #007bff; /* Title color matching the primary color */
+    font-weight: 600; /* Heavier font weight for titles */
+    margin-bottom: 1rem; /* Adjusted bottom margin for spacing */
 }
 
 /* Button Styles */
 .btn-primary {
     background-color: #007bff;
-    border: none;
+    border-color: #007bff;
     color: white;
     padding: 0.75rem 1.25rem;
-    margin-top: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    width: 100%; /* Full-width buttons for smaller screens */
+    margin-top: 0; /* Removing the top margin */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition for hover states */
+    border-radius: 30px; /* Pill-shaped buttons */
+    font-weight: 600; /* Bold text for buttons */
 }
 
 .btn-primary:hover {
     background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for interactive depth */
 }
 
 /* Footer Styles */
@@ -82,40 +76,29 @@ body {
     color: white;
     text-align: center;
     padding: 1rem 0;
-    position: fixed; /* Fixed at the bottom */
+    position: relative; /* Adjusted to 'relative' to prevent overlap with content */
     bottom: 0;
     width: 100%;
-}
-
-.footer p {
-    margin: 0;
+    margin-top: 4rem; /* Adding margin top to push the footer down */
 }
 
 /* Responsive Design Adjustments */
 @media (max-width: 768px) {
     .navigation-menu li {
+        display: block; /* Stack the navigation items on smaller screens */
         text-align: center;
     }
     .navigation-menu li a {
-        padding: 10px 5px;
+        padding: 10px; /* Uniform padding for stacked items */
     }
     .card-body {
-        padding: 1rem; /* Less padding on smaller screens */
+        padding: 1rem;
     }
-    .dashboard .btn, .list-group-item-action {
-        display: block;
-        width: 100%; /* Ensure full-width for smaller screens */
+    .dashboard .btn {
         margin-bottom: 10px; /* Space out stacked buttons */
     }
 }
 
-.list-group-item-action:hover, .list-group-item-action:focus {
-    color: #495057;
-    background-color: #f8f9fa;
-}
+/* Additional Styles */
+/* Use this section to add any new styles or overrides as needed for your design */
 
-.list-group.shadow, .shadow {
-    border-radius: 0.25rem;
-    overflow: hidden;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-}

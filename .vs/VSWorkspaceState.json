@@ -2,13 +2,15 @@
   "ExpandedNodes": [
     "",
     "\\app",
-    "\\app\\admin",
-    "\\app\\auth",
-    "\\app\\forms",
-    "\\app\\inventory",
-    "\\app\\main",
-    "\\app\\models"
+    "\\app\\models",
+    "\\app\\static",
+    "\\app\\static\\css",
+    "\\app\\templates",
+    "\\app\\templates\\admin",
+    "\\app\\templates\\auth",
+    "\\app\\templates\\inventory",
+    "\\app\\templates\\security"
   ],
-  "SelectedNode": "\\app\\auth\\auth.py",
+  "SelectedNode": "\\app\\static\\css\\styles.css",
   "PreviewInSolutionExplorer": false
 }

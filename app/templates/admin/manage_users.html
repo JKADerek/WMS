@@ -10,7 +10,7 @@
             <thead>
                 <tr>
                     <th>Email</th>
-                    <th>Role</th>
+                    <th>Roles</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -18,11 +18,12 @@
                 {% for user in users %}
                 <tr>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.role.name }}</td>
                     <td>
-                        <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
-                        <a href="{{ url_for('admin.delete_user', user_id=user.id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?');">Delete</a>
-                        <!-- You can add more action buttons if needed -->
+                        {% for role in user.roles %}
+                            {{ role.name }}{% if not loop.last %}, {% endif %}
+                        {% else %}
+                            No roles
+                        {% endfor %}
                     </td>
                 </tr>
                 {% endfor %}
